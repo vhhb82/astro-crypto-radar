@@ -2,10 +2,10 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 
 export async function GET({ site }) {
-  // toate postările care nu sunt "draft"
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // ia postările publice (fără draft)
+  const posts = await getCollection('blog', (entry) => !entry.data.draft);
 
-  // fallback dacă `site` nu e setat în astro.config.mjs
+  // fallback dacă site nu e setat în astro.config.mjs
   const siteUrl =
     site?.toString() ??
     import.meta.env.SITE_URL ??
@@ -19,9 +19,9 @@ export async function GET({ site }) {
       title: p.data.title,
       description: p.data.description,
       pubDate: p.data.pubDate,
-      link: `/blog/${p.slug}/`, // <- backticks corecte
+      link: `/blog/${p.slug}/`,   // <-- BACKTICKS, nu ghilimele
     })),
-    // nu mai folosim `stylesheet` aici; dacă vrei XSL, dă un path string valid, de ex. '/rss/stylesheet.xsl'
+    // NU folosim `stylesheet` aici
   });
 }
 
