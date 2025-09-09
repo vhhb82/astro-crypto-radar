@@ -1,0 +1,27 @@
+```astro
+---
+const { title = 'Crypto Radar', description = 'Știri crypto, strategii, top burse & unelte', url = new URL('/', Astro.site ?? 'https://exemplu.ro').toString() } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta name="twitter:card" content="summary_large_image" />
+<style>:root{color-scheme:light dark}body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}</style>
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+</head>
+<body>
+<div style="max-width:1120px;margin:0 auto;padding:0 16px">
+<slot />
+</div>
+</body>
+</html>
+```

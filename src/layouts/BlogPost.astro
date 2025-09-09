@@ -1,0 +1,37 @@
+```astro
+---
+import Base from './Base.astro';
+const { frontmatter } = Astro.props as any;
+const canonical = frontmatter.canonical ?? new URL(`/blog/${Astro.url.pathname.split('/').filter(Boolean).pop()}/`, Astro.site ?? 'https://exemplu.ro').toString();
+const title = `${frontmatter.title} — Crypto Radar`;
+const description = frontmatter.description ?? '';
+const image = frontmatter.image?.src;
+const url = canonical;
+---
+<Base {title} {description} {url}>
+<article style="padding:24px 0">
+<header style="margin-bottom:12px">
+<h1 style="margin:0 0 8px 0">{frontmatter.title}</h1>
+<p style="opacity:.75;margin:0 0 4px 0">{new Date(frontmatter.pubDate).toLocaleDateString('ro-RO')} • {frontmatter.author}</p>
+{frontmatter.tags?.length ? (
+<p style="margin:0;opacity:.7;font-size:.9rem">Tags: {frontmatter.tags.map((t: string) => `<a href="/tags/${encodeURIComponent(t.toLowerCase())}/">${t}</a>`).join(' • ')}</p>
+) : null}
+{image && (<img src={image} alt={frontmatter.image?.alt ?? ''} style="margin-top:12px;border-radius:12px;border:1px solid #0001;" />)}
+</header>
+<slot />
+</article>
+<script type="application/ld+json">
+{JSON.stringify({
+'@context': 'https://schema.org',
+'@type': 'Article',
+headline: frontmatter.title,
+datePublished: new Date(frontmatter.pubDate).toISOString(),
+dateModified: new Date(frontmatter.updatedDate ?? frontmatter.pubDate).toISOString(),
+author: [{ '@type': 'Person', name: frontmatter.author }],
+mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+image: image ? [image] : undefined,
+description,
+})}
+</script>
+</Base>
+```

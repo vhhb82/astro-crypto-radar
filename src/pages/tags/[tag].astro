@@ -1,0 +1,46 @@
+```astro
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+
+export async function getStaticPaths() {
+const posts = await getCollection('blog');
+const set = new Set<string>();
+for (const p of posts) for (const t of (p.data.tags ?? [])) set.add(t.toLowerCase());
+return [...set].map((t) => ({ params: { tag: t } }));
+}
+
+
+const tag = Astro.params.tag!;
+const title = `Tag: ${tag} — Crypto Radar`;
+const description = `Articole marcate cu ${tag}`;
+const url = new URL(`/tags/${tag}/`, Astro.site ?? 'https://exemplu.ro').toString();
+
+
+const posts = (await getCollection('blog'))
+.filter((p) => !p.data.draft && p.data.tags?.map((x)=>x.toLowerCase()).includes(tag))
+.sort((a,b)=> b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<Base {title} {description} {url}>
+<h1 style="margin:24px 0">Tag: {tag}</h1>
+{posts.length === 0 ? (
+<p>Nu există articole pentru acest tag încă.</p>
+) : (
+<ul style="list-style:none;padding:0;margin:0;display:grid;gap:16px">
+{posts.map((p) => (
+<li style="border:1px solid #0001;border-radius:12px;padding:16px">
+<a href={`/blog/${p.slug}/`} style="text-decoration:none;color:inherit">
+<h3 style="margin:0 0 6px 0">{p.data.title}</h3>
+<p style="margin:0 0 6px 0;opacity:.75">{new Date(p.data.pubDate).toLocaleDateString('ro-RO')} • {p.data.author}</p>
+<p style="margin:0;opacity:.8">{p.data.description}</p>
+</a>
+</li>
+))}
+</ul>
+)}
+</Base>
+```
+
+
+---
