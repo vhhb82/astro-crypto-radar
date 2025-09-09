@@ -1,6 +1,7 @@
 {
   "installCommand": "npm install --no-audit --no-fund",
-  "buildCommand": "npx astro@latest build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist"
 }
+
 
