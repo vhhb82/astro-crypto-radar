@@ -5,13 +5,16 @@
   "type": "module",
   "packageManager": "npm@10.9.0",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "og": "node scripts/generate-og.mjs",
-    "postinstall": "node -e \"try{const fs=require('fs'),p=require('path').join('node_modules','.bin','astro');fs.chmodSync(p,0o755);}catch(e){process.exit(0)}\""
+  "dev": "astro dev",
+  "build": "astro build",
+  "preview": "astro preview",
+  "og": "node scripts/generate-og.mjs",
+  "postinstall": "node -e \"try{const fs=require('fs'),p=require('path').join('node_modules','.bin','astro');fs.chmodSync(p,0o755);}catch(e){process.exit(0)}\""
   },
   "engines": { "node": "20.x" },
+  "overrides": {
+  "wrap-ansi": "9.0.0"
+  },
   "dependencies": {
     "@astrojs/react": "^3.6.0",
     "@astrojs/sitemap": "^3.2.0",
