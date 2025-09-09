@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "og": "node scripts/generate-og.mjs"
+  "dev": "astro dev",
+  "build": "astro build",
+  "preview": "astro preview",
+  "og": "node scripts/generate-og.mjs",
+  "postinstall": "chmod +x ./node_modules/.bin/astro || true"
   },
   "dependencies": {
     "@astrojs/react": "^3.6.0",
