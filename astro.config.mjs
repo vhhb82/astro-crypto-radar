@@ -6,20 +6,21 @@ import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
 
-// Adapter Vercel (compatibil Astro 4.x)
+// Adapter Vercel (compatibil Astro 4.x -> @astrojs/vercel@^7)
 import vercel from '@astrojs/vercel/serverless'
 
 export default defineConfig({
-  // la build pe Vercel nu folosi localhost la `site`
+  // nu seta localhost la build pe Vercel; poți pune domeniul când îl ai:
   // site: 'https://crypto-radar.vercel.app',
 
-  output: 'server',     // necesar pentru endpoint /api/news.json
+  output: 'server',     // avem /api/news.json -> SSR
   adapter: vercel(),    // conectează la Vercel
 
   integrations: [react(), sitemap(), tailwind()],
 
-  // doar pentru dev local
+  // doar pentru development local
   server: { port: 4321 }
 })
+
 
 
