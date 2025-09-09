@@ -5,15 +5,17 @@
   "type": "module",
   "packageManager": "npm@10.9.0",
   "scripts": {
-  "dev": "astro dev",
-  "build": "astro build",
-  "preview": "astro preview",
-  "og": "node scripts/generate-og.mjs",
-  "postinstall": "node -e \"try{const fs=require('fs'),p=require('path').join('node_modules','.bin','astro');fs.chmodSync(p,0o755);}catch(e){process.exit(0)}\""
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "og": "node scripts/generate-og.mjs",
+    "postinstall": "node -e \"try{const fs=require('fs'),p=require('path').join('node_modules','.bin','astro');fs.chmodSync(p,0o755);}catch(e){process.exit(0)}\""
   },
-  "engines": { "node": "20.x" },
+  "engines": {
+    "node": "20.x"
+  },
   "overrides": {
-  "wrap-ansi": "9.0.0"
+    "wrap-ansi": "9.0.0"
   },
   "dependencies": {
     "@astrojs/react": "^3.6.0",
@@ -26,12 +28,10 @@
   },
   "devDependencies": {
     "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/vercel": "^7.8.2",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.41",
     "sharp": "^0.33.4",
     "tailwindcss": "^3.4.10"
   }
 }
-
-
-
