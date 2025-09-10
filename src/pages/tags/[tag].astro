@@ -1,54 +1,30 @@
 ---
-import Layout from '../../layouts/Base.astro';
+import Base from '@/layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
-export const prerender = true;
-
 export async function getStaticPaths() {
-  // toate articolele care NU sunt draft
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-
-  // strângem toate tag-urile
-  const all = new Set<string>();
-  for (const p of posts) {
-    const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
-    for (const t of tags) all.add(String(t));
-  }
-
-  // generăm câte o rută pentru fiecare tag
-  return [...all].map((tag) => ({
+  const tags = [...new Set(posts.flatMap(p => p.data.tags))];
+  return tags.map(tag => ({
     params: { tag },
-    props: { tag },
+    props: {
+      tag,
+      posts: posts.filter(p => p.data.tags.includes(tag)),
+    },
   }));
 }
 
-const { tag } = Astro.params;
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .filter((p) => Array.isArray(p.data.tags) && p.data.tags.includes(tag))
-  .sort((a, b) => {
-    const ad = new Date(a.data.pubDate || 0).getTime();
-    const bd = new Date(b.data.pubDate || 0).getTime();
-    return bd - ad;
-  });
+const { tag, posts } = Astro.props as { tag: string; posts: any[] };
 ---
+<Base title={`Articole #${tag} – Crypto Radar`} description={`Postări cu tagul ${tag}`}>
+  <h1 class="text-2xl font-bold mb-4">#{tag}</h1>
+  <ul class="space-y-6">
+    {posts.map((p) => (
+      <li>
+        <a class="text-blue-600" href={`/blog/${p.slug}/`}>{p.data.title}</a>
+        <p class="text-gray-600">{p.data.description}</p>
+      </li>
+    ))}
+  </ul>
+</Base>
 
-<Layout title={`Articole cu tag-ul #${tag}`}>
-  <main class="prose mx-auto">
-    <h1>Articole cu <code>#{tag}</code></h1>
-
-    {posts.length === 0 ? (
-      <p>Nu am găsit articole pentru acest tag.</p>
-    ) : (
-      <ul>
-        {posts.map((p) => (
-          <li>
-            <a href={`/blog/${p.slug}/`}>{p.data.title}</a>
-            {p.data.pubDate && <> — {new Date(p.data.pubDate).toLocaleDateString('ro-RO')}</>}
-            {p.data.description && <div><small>{p.data.description}</small></div>}
-          </li>
-        ))}
-      </ul>
-    )}
-  </main>
-</Layout>

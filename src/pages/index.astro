@@ -1,57 +1,39 @@
 ---
-const {
-  title = 'Crypto Radar',
-  description = 'Știri crypto, strategii, top burse & unelte',
-  url = new URL('/', Astro.site ?? 'https://astro-crypto-radar.pages.dev/').toString()
-} = Astro.props;
-const site = Astro.site?.toString() || url;
-const og = 'og.png';
+import Base from '@/layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<!DOCTYPE html>
-<html lang="ro">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="canonical" href={site} />
+<Base title="Blog – Crypto Radar" description="Articole recente">
+  <nav class="mt-6 flex gap-4">
+    <a href="/blog" class="hover:text-blue-600 transition-colors">Blog</a>
+    <a href="/tags" class="hover:text-blue-600 transition-colors">Taguri</a>
+    <a href="/burse/" class="hover:text-blue-600 transition-colors">Burse & unelte</a>
+    <a href="https://cryptopanic.com/" 
+       rel="noopener noreferrer" 
+       target="_blank"
+       class="hover:text-blue-600 transition-colors">
+      Știri Crypto (CryptoPanic)
+    </a>
+  </nav>
 
-    <!-- Open Graph / Twitter -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={og} />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={og} />
-  </head>
-  <body class="min-h-screen bg-white text-gray-900">
-    <header class="mx-auto max-w-3xl px-4 py-10">
-      <h1 class="text-3xl font-bold">Crypto Radar</h1>
-      <p class="mt-2 text-gray-600">{description}</p>
-      <nav class="mt-6 flex gap-4 text-blue-600">
-        <a href="/blog">Blog</a>
-        <a href="/tags">Taguri</a>
-        <a href="https://cryptopanic.com/" rel="noopener">Știri Crypto (CryptoPanic)</a>
-      </nav>
-    </header>
+  <ul class="space-y-6 mt-8">
+    {posts.map((p) => (
+      <li>
+        <a 
+          class="text-xl font-semibold text-blue-600 hover:text-blue-800 transition-colors" 
+          href={`/blog/${p.slug}/`}
+        >
+          {p.data.title}
+        </a>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">{p.data.description}</p>
+      </li>
+    ))}
+  </ul>
+</Base>
 
-    <main class="mx-auto max-w-3xl px-4 pb-16">
-      <section class="prose">
-        <h2>Ce găsești aici</h2>
-        <ul>
-          <li>Analize de strategie (DCA, momentum, ș.a.)</li>
-          <li>Top burse & unelte utile</li>
-          <li>Știri crypto (curate) și link-uri rapide</li>
-        </ul>
-      </section>
-    </main>
 
-    <footer class="mx-auto max-w-3xl px-4 pb-10 text-sm text-gray-500">
-      © {new Date().getFullYear()} Crypto Radar
-    </footer>
-  </body>
-</html>
 
 

@@ -1,44 +1,33 @@
 ---
-import Layout from '../../layouts/Base.astro';
-import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
-/**
- * Pentru build static, generăm câte o pagină pentru fiecare articol public (draft=false).
- * Returnăm atât params (slug), cât și props (post) ca să nu mai refacem query-ul în pagină.
- */
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map((p) => ({
-    params: { slug: p.slug },
-    props: { post: p },
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
   }));
 }
 
-const { post } = Astro.props;          // primit din getStaticPaths
-const { data } = post;
-const { Content } = await post.render();  // componentă ce randează conținutul MD/MDX
+const { post } = Astro.props as { post: CollectionEntry<'blog'> };
+const { title, description, pubDate, tags } = post.data;
+const { Content } = await post.render();
 ---
-
-<Layout title={data.title} description={data.description}>
-  <article class="prose mx-auto">
-    <header>
-      <h1>{data.title}</h1>
-      {data.pubDate && (
-        <p class="text-sm opacity-70">
-          {new Date(data.pubDate).toLocaleDateString('ro-RO')}
-        </p>
-      )}
-      {Array.isArray(data.tags) && data.tags.length ? (
-        <p class="text-sm">
-          {data.tags.map((t, i) => (
-            <>
-              <a href={`/tags/${t}/`}>#{t}</a>{i < data.tags.length - 1 ? ' · ' : ''}
-            </>
-          ))}
-        </p>
-      ) : null}
-    </header>
-
+<Base title={`${title} – Crypto Radar`} description={description}>
+  <article class="prose">
+    <h1>{title}</h1>
+    <p class="text-sm text-gray-500">{pubDate.toDateString()}</p>
     <Content />
+    {tags.length ? (
+      <p>Taguri:
+        {tags.map((t, i) => (
+          <>
+            {' '}<a class="text-blue-600" href={`/tags/${t}/`}>#{t}</a>{i < tags.length - 1 ? ',' : ''}
+          </>
+        ))}
+      </p>
+    ) : null}
   </article>
-</Layout>
+</Base>
+

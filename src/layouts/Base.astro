@@ -1,27 +1,45 @@
-```astro
 ---
-const { title = 'Crypto Radar', description = 'Știri crypto, strategii, top burse & unelte', url = new URL('/', Astro.site ?? 'https://exemplu.ro').toString() } = Astro.props;
+const {
+  title = 'Crypto Radar',
+  description = 'Știri crypto, strategii, top burse & unelte',
+} = Astro.props;
+
+const site = Astro.site?.toString() ?? 'https://astro-crypto-radar.pages.dev';
+const og = new URL('/og.png', site).toString();
 ---
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ro">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width" />
-<title>{title}</title>
-<meta name="description" content={description} />
-<link rel="canonical" href={url} />
-<meta property="og:type" content="website" />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={url} />
-<meta name="twitter:card" content="summary_large_image" />
-<style>:root{color-scheme:light dark}body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial}</style>
-<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href={site} />
+
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={og} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={og} />
 </head>
-<body>
-<div style="max-width:1120px;margin:0 auto;padding:0 16px">
-<slot />
-</div>
+<body class="min-h-screen bg-white text-gray-900">
+  <header class="mx-auto max-w-3xl px-4 py-6 flex gap-6 items-center">
+    <a class="font-bold text-lg" href="/">Crypto Radar</a>
+    <nav class="ml-auto flex gap-4 text-blue-600">
+      <a href="/blog">Blog</a>
+      <a href="/tags">Taguri</a>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-3xl px-4 pb-16">
+    <slot />
+  </main>
+
+  <footer class="mx-auto max-w-3xl px-4 pb-10 text-sm text-gray-500">
+    © {new Date().getFullYear()} Crypto Radar
+  </footer>
 </body>
 </html>
-```

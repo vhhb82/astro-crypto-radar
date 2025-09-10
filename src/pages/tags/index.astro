@@ -1,33 +1,17 @@
 ---
-import Layout from '../../layouts/Base.astro';
+import Base from '@/layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
-export const prerender = true;
-
 const posts = await getCollection('blog', ({ data }) => !data.draft);
-
 const counts = new Map<string, number>();
-for (const p of posts) {
-  const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
-  for (const t of tags) counts.set(t, (counts.get(t) || 0) + 1);
-}
-
-const allTags = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+for (const p of posts) for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
+const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
 ---
+<Base title="Taguri – Crypto Radar" description="Toate etichetele">
+  <ul class="flex flex-wrap gap-3">
+    {tags.map(([t, c]) => (
+      <li><a class="px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200" href={`/tags/${t}/`}>#{t} ({c})</a></li>
+    ))}
+  </ul>
+</Base>
 
-<Layout title="Toate tag-urile">
-  <main class="prose mx-auto">
-    <h1>Tag-uri</h1>
-    {allTags.length === 0 ? (
-      <p>Nu există tag-uri încă.</p>
-    ) : (
-      <ul>
-        {allTags.map(([t, n]) => (
-          <li>
-            <a href={`/tags/${t}/`}>#{t}</a> — {n} articole
-          </li>
-        ))}
-      </ul>
-    )}
-  </main>
-</Layout>

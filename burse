@@ -1,0 +1,35 @@
+---
+// src/pages/burse.astro
+import CryptoAffiliateSite from "../components/CryptoAffiliateSite.tsx";
+
+export const prerender = true;
+
+const title = "Burse & unelte";
+const description = "Recomandări de burse cripto și unelte utile (link-uri de afiliat).";
+const site = Astro.site?.toString() ?? "https://exemplu.ro";
+---
+
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={`${site}/burse`} />
+  </head>
+  <body class="max-w-4xl mx-auto px-4 py-10">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold">Burse & unelte</h1>
+      <p class="text-gray-600 mt-2">{description}</p>
+    </header>
+
+    <main class="space-y-12">
+      <CryptoAffiliateSite />
+    </main>
+
+    <footer class="mt-14 text-sm text-gray-500">
+      © {new Date().getFullYear()} Crypto Radar
+    </footer>
+  </body>
+</html>
