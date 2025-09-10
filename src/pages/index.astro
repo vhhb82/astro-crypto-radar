@@ -1,36 +1,57 @@
 ---
-import Layout from '../layouts/Base.astro';
-import { getCollection } from 'astro:content';
-
-export const prerender = true;
-
-// articole publice, cele mai noi primele
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => {
-    const ad = new Date(a.data.pubDate || 0).getTime();
-    const bd = new Date(b.data.pubDate || 0).getTime();
-    return bd - ad;
-  });
+const {
+  title = 'Crypto Radar',
+  description = 'Știri crypto, strategii, top burse & unelte',
+  url = new URL('/', Astro.site ?? 'https://astro-crypto-radar.pages.dev/').toString()
+} = Astro.props;
+const site = Astro.site?.toString() || url;
+const og = 'og.png';
 ---
 
-<Layout title="Crypto Radar — Blog">
-  <main class="prose mx-auto">
-    <h1>Ultimele articole</h1>
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={site} />
 
-    {posts.length === 0 ? (
-      <p>Încă nu există articole publice.</p>
-    ) : (
-      <ul>
-        {posts.map((p) => (
-          <li>
-            <a href={`/blog/${p.slug}/`}>{p.data.title}</a>
-            {p.data.pubDate && <> — {new Date(p.data.pubDate).toLocaleDateString('ro-RO')}</>}
-            {p.data.description && <div><small>{p.data.description}</small></div>}
-          </li>
-        ))}
-      </ul>
-    )}
-  </main>
-</Layout>
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og} />
+  </head>
+  <body class="min-h-screen bg-white text-gray-900">
+    <header class="mx-auto max-w-3xl px-4 py-10">
+      <h1 class="text-3xl font-bold">Crypto Radar</h1>
+      <p class="mt-2 text-gray-600">{description}</p>
+      <nav class="mt-6 flex gap-4 text-blue-600">
+        <a href="/blog">Blog</a>
+        <a href="/tags">Taguri</a>
+        <a href="https://cryptopanic.com/" rel="noopener">Știri Crypto (CryptoPanic)</a>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-4 pb-16">
+      <section class="prose">
+        <h2>Ce găsești aici</h2>
+        <ul>
+          <li>Analize de strategie (DCA, momentum, ș.a.)</li>
+          <li>Top burse & unelte utile</li>
+          <li>Știri crypto (curate) și link-uri rapide</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="mx-auto max-w-3xl px-4 pb-10 text-sm text-gray-500">
+      © {new Date().getFullYear()} Crypto Radar
+    </footer>
+  </body>
+</html>
 
 
