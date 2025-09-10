@@ -1,27 +1,20 @@
+export const prerender = true;
+
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 
-export async function GET({ site }) {
-  // ia postările publice (fără draft)
-  const posts = await getCollection('blog', (entry) => !entry.data.draft);
-
-  // fallback dacă site nu e setat în astro.config.mjs
-  const siteUrl =
-    site?.toString() ??
-    import.meta.env.SITE_URL ??
-    'https://astro-crypto-radar.vercel.app';
-
+export async function GET(context) {
+  const posts = await getCollection('blog', (e) => !e.data.draft);
   return rss({
     title: 'Crypto Radar — Blog',
     description: 'Ultimele articole din blog',
-    site: siteUrl,
+    site: context.site?.toString() || import.meta.env.SITE_URL || 'https://example.pages.dev',
     items: posts.map((p) => ({
       title: p.data.title,
       description: p.data.description,
       pubDate: p.data.pubDate,
-      link: `/blog/${p.slug}/`,   // <-- BACKTICKS, nu ghilimele
+      link: `/blog/${p.slug}/`,
     })),
-    // NU folosim `stylesheet` aici
   });
 }
 

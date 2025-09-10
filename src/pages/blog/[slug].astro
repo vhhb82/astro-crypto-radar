@@ -1,21 +1,44 @@
-```astro
 ---
+import Layout from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import BlogPost from '../../layouts/BlogPost.astro';
 
-
+/**
+ * Pentru build static, generăm câte o pagină pentru fiecare articol public (draft=false).
+ * Returnăm atât params (slug), cât și props (post) ca să nu mai refacem query-ul în pagină.
+ */
 export async function getStaticPaths() {
-const posts = await getCollection('blog');
-return posts
-.filter((p) => !p.data.draft)
-.map((p) => ({ params: { slug: p.slug }, props: { post: p } }));
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((p) => ({
+    params: { slug: p.slug },
+    props: { post: p },
+  }));
 }
 
-
-const { post } = Astro.props;
-const { Content, headings } = await post.render();
+const { post } = Astro.props;          // primit din getStaticPaths
+const { data } = post;
+const { Content } = await post.render();  // componentă ce randează conținutul MD/MDX
 ---
-<BlogPost frontmatter={post.data}>
-<Content />
-</BlogPost>
-```
+
+<Layout title={data.title} description={data.description}>
+  <article class="prose mx-auto">
+    <header>
+      <h1>{data.title}</h1>
+      {data.pubDate && (
+        <p class="text-sm opacity-70">
+          {new Date(data.pubDate).toLocaleDateString('ro-RO')}
+        </p>
+      )}
+      {Array.isArray(data.tags) && data.tags.length ? (
+        <p class="text-sm">
+          {data.tags.map((t, i) => (
+            <>
+              <a href={`/tags/${t}/`}>#{t}</a>{i < data.tags.length - 1 ? ' · ' : ''}
+            </>
+          ))}
+        </p>
+      ) : null}
+    </header>
+
+    <Content />
+  </article>
+</Layout>

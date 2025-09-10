@@ -1,8 +1,7 @@
-```md
 ---
-title: "Unelte care cresc productivitatea: TradingView, Altrady & co."
-description: "Seturi de alerte, screenere și execuție multi-exchange pentru workflow rapid."
+title: "Top tools pentru trading"
+description: "Scurt ghid cu instrumente utile pentru tradingul de criptomonede."
 pubDate: 2025-08-10
-author: "Crypto Radar"
-tags: [Tools, Productivitate]
+draft: false
+tags: ["trading", "unelte"]
 ---

@@ -1,8 +1,7 @@
-```md
 ---
-title: "Top burse: checklist de securitate în 5 pași"
-description: "Reguli rapide când alegi o bursă: KYC, proof-of-reserves, fond SAFU, audit, istoricul incidentelor."
+title: "Top exchange-uri și securitate"
+description: "Ce ar trebui să știi despre siguranța pe exchange-uri."
 pubDate: 2025-08-20
-author: "Crypto Radar"
-tags: [Exchanges, Securitate]
+draft: false
+tags: ["exchange", "securitate"]
 ---

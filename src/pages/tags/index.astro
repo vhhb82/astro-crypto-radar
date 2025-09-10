@@ -1,23 +1,33 @@
-```astro
 ---
+import Layout from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import Base from '../../layouts/Base.astro';
 
+export const prerender = true;
 
-const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
-const tagMap = new Map<string, number>();
-for (const p of posts) for (const t of (p.data.tags ?? [])) tagMap.set(t, (tagMap.get(t) ?? 0) + 1);
-const tags = [...tagMap.entries()].sort((a,b)=> b[1]-a[1]);
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+const counts = new Map<string, number>();
+for (const p of posts) {
+  const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
+  for (const t of tags) counts.set(t, (counts.get(t) || 0) + 1);
+}
+
+const allTags = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 ---
-<Base title="Tags — Crypto Radar" description="Toate etichetele blogului" url={new URL('/tags/', Astro.site ?? 'https://exemplu.ro').toString()}>
-<h1 style="margin:24px 0">Etichete</h1>
-<ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:12px">
-{tags.map(([t, n]) => (
-<li><a href={`/tags/${encodeURIComponent(t.toLowerCase())}/`} style="border:1px solid #0001;border-radius:999px;padding:.4rem .8rem;display:inline-block;text-decoration:none">{t} ({n})</a></li>
-))}
-</ul>
-</Base>
-```
 
-
----
+<Layout title="Toate tag-urile">
+  <main class="prose mx-auto">
+    <h1>Tag-uri</h1>
+    {allTags.length === 0 ? (
+      <p>Nu există tag-uri încă.</p>
+    ) : (
+      <ul>
+        {allTags.map(([t, n]) => (
+          <li>
+            <a href={`/tags/${t}/`}>#{t}</a> — {n} articole
+          </li>
+        ))}
+      </ul>
+    )}
+  </main>
+</Layout>

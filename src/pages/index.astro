@@ -1,45 +1,36 @@
 ---
-import "../styles/tailwind.css";
-import "../styles/base.css";
-import CryptoAffiliateSite from "../components/CryptoAffiliateSite";
+import Layout from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
 
-const title = "Crypto Radar — Știri crypto, strategii, top burse & unelte";
-const description = "Site rapid, SEO-friendly: ultimele știri din crypto, strategii și top 10 burse.";
-const site = Astro.site?.toString().replace(/\/$/, "") || "http://localhost:4321";
-const url = site + "/";
-const og = site + "/og.png";
+export const prerender = true;
+
+// articole publice, cele mai noi primele
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => {
+    const ad = new Date(a.data.pubDate || 0).getTime();
+    const bd = new Date(b.data.pubDate || 0).getTime();
+    return bd - ad;
+  });
 ---
-<!DOCTYPE html>
-<html lang="ro">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={url} />
 
-    <!-- Favicon + brand -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=1" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <meta name="application-name" content="Crypto Radar" />
-    <meta name="apple-mobile-web-app-title" content="Crypto Radar" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)" />
+<Layout title="Crypto Radar — Blog">
+  <main class="prose mx-auto">
+    <h1>Ultimele articole</h1>
 
-    <!-- Open Graph / Twitter -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={url} />
-    <meta property="og:image" content={og} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={og} />
+    {posts.length === 0 ? (
+      <p>Încă nu există articole publice.</p>
+    ) : (
+      <ul>
+        {posts.map((p) => (
+          <li>
+            <a href={`/blog/${p.slug}/`}>{p.data.title}</a>
+            {p.data.pubDate && <> — {new Date(p.data.pubDate).toLocaleDateString('ro-RO')}</>}
+            {p.data.description && <div><small>{p.data.description}</small></div>}
+          </li>
+        ))}
+      </ul>
+    )}
+  </main>
+</Layout>
 
-    <style>:root{color-scheme:light dark}</style>
-  </head>
-  <body>
-    <CryptoAffiliateSite client:load newsEndpoint="/api/news.json" />
-  </body>
-</html>
+
